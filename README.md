@@ -37,7 +37,7 @@ docker run --rm --gpus all vapoursynth-docker
 Use docker run to start the container and run your VapourSynth script. The output will be piped through standard output (stdout) to your encoder of choice (e.g. FFmpeg).
 
 ```bash
-docker run --rm --init --log-driver none --gpus all -v "/path/to/your/files:/vapoursynth/assets" vapoursynth-docker "assets/script.vpy" - | ffmpeg -i - "output.mkv"
+docker run --rm --init --log-driver none --gpus all -v "/path/to/your/files:/vapoursynth/assets" vapoursynth-docker "assets/script.vpy" | ffmpeg -i - "output.mkv"
 ```
 
 #### Command details
@@ -49,14 +49,14 @@ docker run --rm --init --log-driver none --gpus all -v "/path/to/your/files:/vap
 - `-v "/path/to/your/files:/vapoursynth/assets"`: Mounts a local directory into the container at `/vapoursynth/assets`, making your files accessible inside the container. This directory should contain all the files required by your VapourSynth script, including the script itself (e.g., `script.vpy`), the input video, and any additional resources such as the models for ML inference.
 - `vapoursynth-docker`: The Docker image to run.
 - `"assets/script.vpy"`: The VapourSynth script to execute, located in the mounted directory. You can specify either a single `.vpy` file (the default command already include the y4m headers to the output) or a complete `vspipe` command for more advanced use cases (e.g. passing custom arguments to the script). Note that the default working directory inside the container is `/vapoursynth`, so you can use a relative path for convenience.
-- `- | ffmpeg -i - "output.mkv"`: Pipes the script's output to FFmpeg (or any other encoder) **on the host** to produce the final video.
+- `| ffmpeg -i - "output.mkv"`: Pipes the script's output to FFmpeg (or any other encoder) **on the host** to produce the final video.
 
 #### More examples
 
 Pass additional arguments to the VapourSynth script and encode the final video with the SVT-AV1 standalone encoder:
 
 ```bash
-docker run --rm --init --log-driver none --gpus all -v "/path/to/your/files:/vapoursynth/assets" vapoursynth-docker vspipe -c y4m --arg "arg1=value1" --arg "arg2=value2" --start 5 --end 100 "assets/script.vpy" - | SvtAv1EncApp -i - --crf 25 --preset 4 --tune 2 -b output.ivf
+docker run --rm --init --log-driver none --gpus all -v "/path/to/your/files:/vapoursynth/assets" vapoursynth-docker vspipe -c y4m --arg "arg1=value1" --arg "arg2=value2" --start 5 --end 100 "assets/script.vpy" | SvtAv1EncApp -i - --crf 25 --preset 4 --tune 2 -b output.ivf
 ```
 
 ## Vapoursynth Plugins
