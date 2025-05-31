@@ -261,6 +261,15 @@ RUN git clone https://github.com/sekrit-twc/EdgeFixer.git \
     && cd EdgeFixer \
     && gcc -shared -o ../edgefixer.so edgefixer.c vsplugin.c -lm -I "/usr/local/include/vapoursynth"
 
+# d2vsource
+RUN git clone --depth 1 --branch v1.3 https://github.com/dwbuiten/d2vsource.git \
+    && cd d2vsource \
+    && mkdir build \
+    && ./autogen.sh \
+    && ./configure --prefix="/vsplugins/d2vsource/build" \
+    && make -j $(nproc) \
+    && make install
+
 ENV PATH="/usr/local/cuda/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"
 
@@ -342,6 +351,9 @@ COPY --from=build /vsplugins/vapoursynth-tivtc/build/libtivtc.so /usr/local/lib/
 
 # edgefixer
 COPY --from=build /vsplugins/EdgeFixer/edgefixer.so /usr/local/lib/vapoursynth/
+
+# nnedi3
+COPY --from=build /vsplugins/d2vsource/build/lib/libd2vsource.so /usr/local/lib/vapoursynth/
 
 # vsutil
 COPY --from=build /usr/local/lib/python3.12/site-packages/vsutil/ /usr/local/lib/python3.12/site-packages/vsutil/
